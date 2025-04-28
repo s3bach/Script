@@ -1,0 +1,21 @@
+const deleteTriggers_ = e => ScriptApp.getScriptTriggers().forEach(t => {
+  if (e.includes(t.getHandlerFunction())) ScriptApp.deleteTrigger(t);
+});
+const start = _ => FormApp.getActiveForm().setAcceptingResponses(true);
+const end = _ => FormApp.getActiveForm().setAcceptingResponses(false).setCustomClosedFormMessage("Closed.");
+
+function installTimeDrivenTrigger() {
+  deleteTriggers_(["start", "end"]);
+  const time1 = new Date();
+  time1.setHours(8, 00, 0);
+  const time2 = new Date();
+  time2.setHours(17, 00, 0);
+  ScriptApp.newTrigger("start").timeBased().at(time1).create();
+  ScriptApp.newTrigger("end").timeBased().at(time2).create();
+}
+
+// Please run this script. By this, installTimeDrivenTrigger() is run 00:00 - 01:00 every day.
+function init() {
+  deleteTriggers_(["installTimeDrivenTrigger"]);
+  ScriptApp.newTrigger("installTimeDrivenTrigger").timeBased().everyDays(1).atHour(0).create();
+}
